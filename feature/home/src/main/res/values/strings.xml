@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty_notes_message">Ready to get started? Click the plus button to unlock a world of creative possibilities.</string>
+    <string name="create_note">Create note</string>
+</resources>

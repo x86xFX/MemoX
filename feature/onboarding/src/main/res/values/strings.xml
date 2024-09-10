@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_started">Get Started</string>
+    <string name="onboarding_description">Create, modify, and keep track of your notes in one place</string>
+    <string name="memox">MemoX</string>
+</resources>

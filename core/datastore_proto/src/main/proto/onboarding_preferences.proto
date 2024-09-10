@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+option java_package = "me.theek.memox.core.datastore_proto";
+option java_multiple_files = true;
+
+message OnboardingPreferences {
+  bool should_hide_onboarding = 1;
+}

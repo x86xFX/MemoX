@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folder_name_cannot_be_empty">Folder name cannot be empty.</string>
+    <string name="folder_name_is_too_long">Folder name is too long.</string>
+    <string name="title_is_too_long">Title is too long</string>
+    <string name="title_cannot_be_empty">Title cannot be empty</string>
+</resources>
