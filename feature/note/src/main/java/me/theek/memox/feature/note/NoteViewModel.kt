@@ -73,6 +73,8 @@ class NoteViewModel @Inject constructor(
         private set
     var noteTitleValidationState: ValidationResult by mutableStateOf(ValidationResult(isValid = true))
         private set
+    var shouldNavigateToHome by mutableStateOf(false)
+        private set
 
     fun checkCameraPermissions() {
         viewModelScope.launch {
@@ -99,6 +101,9 @@ class NoteViewModel @Inject constructor(
     fun onNewFolderNameChange(value: String) {
         newFolderName = value
     }
+    fun onPhotosPick(pics: List<Uri>) {
+        selectedPics = pics
+    }
 
     fun onNewNoteCreate() {
         viewModelScope.launch {
@@ -116,6 +121,7 @@ class NoteViewModel @Inject constructor(
                         ),
                         pics = selectedPics?.map { Photo(path = it, capturedAt = System.currentTimeMillis()) },
                     )
+                    shouldNavigateToHome = true
                 } else {
                     noteTitleValidationState = validationResult
                 }
@@ -147,9 +153,5 @@ class NoteViewModel @Inject constructor(
                 folderValidationState = validationResult
             }
         }
-    }
-
-    fun onPhotosPick(pics: List<Uri>) {
-        selectedPics = pics
     }
 }
