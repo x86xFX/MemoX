@@ -24,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,6 +45,7 @@ fun NoteCreationScreen(
     val cameraPermissionState by noteViewModel.cameraPermission.collectAsStateWithLifecycle()
     var shouldShowAdditionalFeaturesDialog by remember { mutableStateOf(false) }
     var shouldShowCameraView by rememberSaveable { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         modifier = Modifier
@@ -58,7 +60,10 @@ fun NoteCreationScreen(
         floatingActionButton = {
             FloatingActionButton (
                 modifier = Modifier.imePadding(),
-                onClick = { shouldShowAdditionalFeaturesDialog = true }
+                onClick = {
+                    focusManager.clearFocus(force = true)
+                    shouldShowAdditionalFeaturesDialog = true
+                }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Add,

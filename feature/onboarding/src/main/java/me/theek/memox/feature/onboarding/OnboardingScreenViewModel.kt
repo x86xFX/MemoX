@@ -19,7 +19,7 @@ class OnboardingScreenViewModel @Inject constructor(private val preferencesRepos
 
     fun onHideOnboardingScreen() {
         viewModelScope.launch(Dispatchers.IO) {
-            preferencesRepository.setShouldHideOnboarding(shouldHideOnboarding = false)
+            preferencesRepository.setShouldHideOnboarding(shouldHideOnboarding = true)
         }
         shouldNavigateToHome = true
     }

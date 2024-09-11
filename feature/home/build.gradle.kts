@@ -52,6 +52,10 @@ dependencies {
     implementation(libs.hilt.navigation)
 
     implementation(project(":core:design_system"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:model"))
+
+    implementation(libs.coil.compose)
 
     debugImplementation(libs.androidx.ui.tooling)
     testImplementation(libs.junit)

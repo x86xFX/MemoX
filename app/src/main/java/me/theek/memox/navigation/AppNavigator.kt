@@ -9,7 +9,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import me.theek.memox.UiState
+import me.theek.memox.core.util.UiState
+import me.theek.memox.feature.home.EmptyNotesScreen
 import me.theek.memox.feature.home.HomeScreen
 import me.theek.memox.feature.note.NoteCreationScreen
 import me.theek.memox.feature.onboarding.OnboardingScreen
@@ -46,6 +47,11 @@ fun AppNavigator(uiState: UiState.Success<Boolean>) {
                     if (navController.canGoBack) {
                         navController.navigate(AppRoutes.NOTE_SCREEN)
                     }
+                },
+                onNavigateToEmptyScreen = {
+                    if (navController.canGoBack) {
+                        navController.navigate(AppRoutes.EMPTY_NOTE_SCREEN)
+                    }
                 }
             )
         }
@@ -58,7 +64,23 @@ fun AppNavigator(uiState: UiState.Success<Boolean>) {
             NoteCreationScreen(
                 onNavigateBack = {
                     if (navController.canGoBack) {
-                        navController.popBackStack()
+                        navController.navigate(AppRoutes.HOME_SCREEN) {
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(
+            route = AppRoutes.EMPTY_NOTE_SCREEN
+        ) {
+            EmptyNotesScreen(
+                onNoteCreateClicked = {
+                    if (navController.canGoBack) {
+                        navController.navigate(AppRoutes.NOTE_SCREEN)
                     }
                 }
             )
@@ -73,4 +95,5 @@ object AppRoutes {
     const val ONBOARDING_SCREEN = "onboarding_screen"
     const val HOME_SCREEN = "home_screen"
     const val NOTE_SCREEN = "note_screen"
+    const val EMPTY_NOTE_SCREEN = "empty_note_screen"
 }

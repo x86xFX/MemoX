@@ -8,12 +8,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import me.theek.memox.core.datastore.UserPreferencesDatasource
+import me.theek.memox.core.util.UiState
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(userPreferencesDatasource: UserPreferencesDatasource) : ViewModel() {
 
-    val uiState: StateFlow<UiState> = userPreferencesDatasource.shouldHideOnboarding
+    val uiState: StateFlow<UiState<Boolean>> = userPreferencesDatasource.shouldHideOnboarding
         .map {
             UiState.Success(data = it)
         }
@@ -22,9 +23,4 @@ class MainViewModel @Inject constructor(userPreferencesDatasource: UserPreferenc
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = UiState.Loading
         )
-}
-
-sealed interface UiState {
-    data object Loading : UiState
-    data class Success<T>(val data: T) : UiState
 }

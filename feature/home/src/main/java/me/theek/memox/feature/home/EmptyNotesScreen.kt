@@ -1,4 +1,4 @@
-package me.theek.memox.feature.home.components
+package me.theek.memox.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,10 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.theek.memox.core.design_system.ui.theme.Onboarding_Background_Dark_Blue
-import me.theek.memox.feature.home.R
 
 @Composable
-internal fun EmptyNotesView(
+fun EmptyNotesScreen(
     onNoteCreateClicked: () -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.background,

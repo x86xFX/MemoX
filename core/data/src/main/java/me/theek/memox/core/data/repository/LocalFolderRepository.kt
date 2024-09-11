@@ -1,9 +1,11 @@
 package me.theek.memox.core.data.repository
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import me.theek.memox.core.database.dao.FolderDao
 import me.theek.memox.core.data.mappers.toFolder
@@ -19,6 +21,7 @@ class LocalFolderRepository @Inject constructor(private val folderDao: FolderDao
     override fun getAllFolders(): Flow<List<Folder>> {
         return folderDao
             .getAllFolders()
+            .onStart { delay(3000) }
             .map { entities ->
                 entities.map { it.toFolder() }
             }

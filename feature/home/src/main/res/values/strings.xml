@@ -2,4 +2,7 @@
 <resources>
     <string name="empty_notes_message">Ready to get started? Click the plus button to unlock a world of creative possibilities.</string>
     <string name="create_note">Create note</string>
+    <string name="folders">FOLDERS</string>
+    <string name="recent_notes">RECENT NOTES</string>
+    <string name="image_preview">Image preview</string>
 </resources>

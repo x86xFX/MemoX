@@ -66,9 +66,12 @@ dependencies {
 
     implementation(project(":core:design_system"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:model"))
     implementation(project(":feature:home"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:note"))
+
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
 

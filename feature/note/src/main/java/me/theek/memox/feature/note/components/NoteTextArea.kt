@@ -118,7 +118,6 @@ internal fun NoteTextArea(
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(uri)
-                            .crossfade(true)
                             .memoryCacheKey(uri.path)
                             .diskCacheKey(uri.path)
                             .build(),
