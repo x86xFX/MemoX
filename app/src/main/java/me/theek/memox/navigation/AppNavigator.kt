@@ -9,20 +9,21 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import me.theek.memox.core.model.UserPreference
 import me.theek.memox.core.util.UiState
-import me.theek.memox.feature.home.EmptyNotesScreen
+import me.theek.memox.feature.home.GetStartedScreen
 import me.theek.memox.feature.home.HomeScreen
 import me.theek.memox.feature.note.NoteCreationScreen
 import me.theek.memox.feature.onboarding.OnboardingScreen
 
 @Composable
-fun AppNavigator(uiState: UiState.Success<Boolean>) {
+fun AppNavigator(uiState: UiState.Success<UserPreference>) {
 
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = if (uiState.data) AppRoutes.HOME_SCREEN else AppRoutes.ONBOARDING_SCREEN
+        startDestination = uiState.calculateStartDestination()
     ) {
         composable(
             route = AppRoutes.ONBOARDING_SCREEN,
@@ -31,7 +32,7 @@ fun AppNavigator(uiState: UiState.Success<Boolean>) {
             OnboardingScreen(
                 onNavigateToHome = {
                     if (navController.canGoBack) {
-                        navController.navigate(AppRoutes.HOME_SCREEN) {
+                        navController.navigate(AppRoutes.GET_STARTED_SCREEN) {
                             popUpTo(0) {
                                 inclusive = true
                             }
@@ -50,7 +51,7 @@ fun AppNavigator(uiState: UiState.Success<Boolean>) {
                 },
                 onNavigateToEmptyScreen = {
                     if (navController.canGoBack) {
-                        navController.navigate(AppRoutes.EMPTY_NOTE_SCREEN)
+                        navController.navigate(AppRoutes.GET_STARTED_SCREEN)
                     }
                 }
             )
@@ -74,10 +75,8 @@ fun AppNavigator(uiState: UiState.Success<Boolean>) {
             )
         }
 
-        composable(
-            route = AppRoutes.EMPTY_NOTE_SCREEN
-        ) {
-            EmptyNotesScreen(
+        composable(route = AppRoutes.GET_STARTED_SCREEN) {
+            GetStartedScreen(
                 onNoteCreateClicked = {
                     if (navController.canGoBack) {
                         navController.navigate(AppRoutes.NOTE_SCREEN)
@@ -88,6 +87,15 @@ fun AppNavigator(uiState: UiState.Success<Boolean>) {
     }
 }
 
+
+private fun UiState.Success<UserPreference>.calculateStartDestination(): String {
+    return when {
+        !data.shouldHideOnboarding -> AppRoutes.ONBOARDING_SCREEN
+        data.shouldHideGetStartedScreen -> AppRoutes.HOME_SCREEN
+        else -> AppRoutes.GET_STARTED_SCREEN
+    }
+}
+
 private val NavController.canGoBack: Boolean
     get() = this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
 
@@ -95,5 +103,5 @@ object AppRoutes {
     const val ONBOARDING_SCREEN = "onboarding_screen"
     const val HOME_SCREEN = "home_screen"
     const val NOTE_SCREEN = "note_screen"
-    const val EMPTY_NOTE_SCREEN = "empty_note_screen"
+    const val GET_STARTED_SCREEN = "get_started_screen"
 }

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import me.theek.memox.core.design_system.ui.theme.Onboarding_Background_Dark_Blue
 
 @Composable
-fun EmptyNotesScreen(
+fun GetStartedScreen(
     onNoteCreateClicked: () -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.background,

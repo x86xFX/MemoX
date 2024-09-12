@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.theek.memox.core.design_system.ui.theme.MemoXTheme
 import me.theek.memox.core.design_system.ui.theme.isInDarkMode
+import me.theek.memox.core.model.UserPreference
 import me.theek.memox.core.util.UiState
 import me.theek.memox.navigation.AppNavigator
 
@@ -49,7 +50,7 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             val uiState = mainViewModel.uiState
-                .filterIsInstance<UiState.Success<Boolean>>()
+                .filterIsInstance<UiState.Success<UserPreference>>()
                 .first()
 
             setContent {

@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import me.theek.memox.core.datastore_proto.OnboardingPreferences
+import me.theek.memox.core.datastore_proto.UserPreferences
 import javax.inject.Singleton
 
 @Module
@@ -21,15 +21,15 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideOnboardingPreferencesDataStore(
+    fun provideUserPreferencesDataStore(
         @ApplicationContext context: Context,
-        onboardingPreferencesSerializer: OnboardingPreferencesSerializer
-    ): DataStore<OnboardingPreferences> {
+        userPreferencesSerializer: UserPreferencesSerializer
+    ): DataStore<UserPreferences> {
 
         return DataStoreFactory.create(
-            serializer = onboardingPreferencesSerializer,
+            serializer = userPreferencesSerializer,
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { context.dataStoreFile(fileName = "onboarding_preferences.pb") }
+            produceFile = { context.dataStoreFile(fileName = "user_preferences.pb") }
         )
 
     }

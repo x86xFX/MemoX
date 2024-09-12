@@ -19,6 +19,9 @@ interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY note_modified_date DESC")
     fun getAllNotes(): Flow<List<NoteWithPhotosAndFolderDB>>
 
+    @Query("SELECT (SELECT COUNT(*) FROM notes) == 0")
+    fun isEmpty(): Boolean
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun createNote(noteEntity: NoteEntity): Long
 
