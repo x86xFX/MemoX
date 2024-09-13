@@ -2,6 +2,7 @@ package me.theek.memox.core.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 
-interface CameraRepository {
+interface AdditionalFeaturesRepository {
     fun checkCameraPermission(): Flow<Boolean>
+    fun checkLocationPermission(): Flow<Boolean>
 }

@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/camera" />
             <option value="$PROJECT_DIR$/feature/home" />
+            <option value="$PROJECT_DIR$/feature/location" />
             <option value="$PROJECT_DIR$/feature/note" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
           </set>

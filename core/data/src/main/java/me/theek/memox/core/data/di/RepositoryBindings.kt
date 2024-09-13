@@ -4,11 +4,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import me.theek.memox.core.data.repository.CameraRepositoryImpl
+import me.theek.memox.core.data.repository.AdditionalFeaturesRepositoryImpl
 import me.theek.memox.core.data.repository.DatastorePreferencesRepository
 import me.theek.memox.core.data.repository.LocalFolderRepository
 import me.theek.memox.core.data.repository.NoteRepositoryImpl
-import me.theek.memox.core.domain.repository.CameraRepository
+import me.theek.memox.core.domain.repository.AdditionalFeaturesRepository
 import me.theek.memox.core.domain.repository.FolderRepository
 import me.theek.memox.core.domain.repository.NoteRepository
 import me.theek.memox.core.domain.repository.PreferencesRepository
@@ -24,7 +24,7 @@ abstract class RepositoryBindings {
 
     @Binds
     @Singleton
-    abstract fun bindCameraRepository(cameraRepositoryImpl: CameraRepositoryImpl): CameraRepository
+    abstract fun bindCameraRepository(cameraRepositoryImpl: AdditionalFeaturesRepositoryImpl): AdditionalFeaturesRepository
 
     @Binds
     @Singleton

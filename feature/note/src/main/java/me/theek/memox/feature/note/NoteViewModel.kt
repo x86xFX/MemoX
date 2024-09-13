@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import me.theek.memox.core.domain.repository.CameraRepository
+import me.theek.memox.core.domain.repository.AdditionalFeaturesRepository
 import me.theek.memox.core.domain.repository.FolderRepository
 import me.theek.memox.core.domain.repository.NoteRepository
 import me.theek.memox.core.domain.use_case.ValidateFolderName
@@ -25,20 +25,23 @@ import me.theek.memox.core.domain.use_case.ValidationResult
 import me.theek.memox.core.model.Folder
 import me.theek.memox.core.model.Note
 import me.theek.memox.core.model.Photo
-import me.theek.memox.feature.camera.CameraPermissionState
+import me.theek.memox.core.util.PermissionState
 import javax.inject.Inject
 
 @HiltViewModel
 class NoteViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
     private val folderRepository: FolderRepository,
-    private val cameraRepository: CameraRepository,
+    private val additionalFeaturesRepository: AdditionalFeaturesRepository,
     private val validateFolderName: ValidateFolderName,
     private val validateNoteTitle: ValidateNoteTitle
 ) : ViewModel() {
 
-    private val _cameraPermission: MutableStateFlow<CameraPermissionState> = MutableStateFlow(CameraPermissionState.Loading)
-    val cameraPermission: StateFlow<CameraPermissionState> = _cameraPermission.asStateFlow()
+    private val _cameraPermission: MutableStateFlow<PermissionState> = MutableStateFlow(PermissionState.Loading)
+    val cameraPermission: StateFlow<PermissionState> = _cameraPermission.asStateFlow()
+
+    private val _locationPermission: MutableStateFlow<PermissionState> = MutableStateFlow(PermissionState.Loading)
+    val locationPermission: StateFlow<PermissionState> = _locationPermission.asStateFlow()
 
     val folders: StateFlow<UiState<List<Folder>>> = folderRepository.getAllFolders()
         .map {
@@ -78,10 +81,20 @@ class NoteViewModel @Inject constructor(
 
     fun checkCameraPermissions() {
         viewModelScope.launch {
-            if (cameraRepository.checkCameraPermission().single()) {
-                _cameraPermission.value = CameraPermissionState.PermissionGranted
+            if (additionalFeaturesRepository.checkCameraPermission().single()) {
+                _cameraPermission.value = PermissionState.PermissionGranted
             } else {
-                _cameraPermission.value = CameraPermissionState.PermissionDenied
+                _cameraPermission.value = PermissionState.PermissionDenied
+            }
+        }
+    }
+
+    fun checkLocationPermissions() {
+        viewModelScope.launch {
+            if (additionalFeaturesRepository.checkLocationPermission().single()) {
+                _locationPermission.value = PermissionState.PermissionGranted
+            } else {
+                _locationPermission.value = PermissionState.PermissionDenied
             }
         }
     }

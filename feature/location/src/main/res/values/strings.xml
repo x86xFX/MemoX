@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grant_location_permission_in_order_to_get_current_location_to_the_map">Grant location permission in order to get current location to the map.</string>
+</resources>

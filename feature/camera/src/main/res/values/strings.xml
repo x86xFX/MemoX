@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="grant_permission">Grant Permission</string>
     <string name="grant_camera_permission_in_order_to_add_photos_to_the_notes">Grant camera permission in order to add photos to the notes.</string>
     <string name="change_camera">Change camera</string>
     <string name="take_a_picture">Take a picture</string>

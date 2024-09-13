@@ -58,8 +58,7 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
 
-    implementation(project(":core:data"))
-    implementation(project(":core:domain"))
+    implementation(project(":core:model"))
     implementation(project(":core:design_system"))
 
     debugImplementation(libs.androidx.ui.tooling)

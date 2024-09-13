@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.theek.memox.feature.camera.CameraScreen
+import me.theek.memox.feature.location.LocationView
 import me.theek.memox.feature.note.components.AdditionalFeaturesDialog
 import me.theek.memox.feature.note.components.FoldersRow
 import me.theek.memox.feature.note.components.NewFolderDialog
@@ -43,8 +44,10 @@ fun NoteCreationScreen(
 ) {
     val foldersState by noteViewModel.folders.collectAsStateWithLifecycle()
     val cameraPermissionState by noteViewModel.cameraPermission.collectAsStateWithLifecycle()
+    val locationPermissionState by noteViewModel.locationPermission.collectAsStateWithLifecycle()
     var shouldShowAdditionalFeaturesDialog by remember { mutableStateOf(false) }
     var shouldShowCameraView by rememberSaveable { mutableStateOf(false) }
+    var shouldShowLocationView by rememberSaveable { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
     Scaffold(
@@ -109,7 +112,10 @@ fun NoteCreationScreen(
                 shouldShowAdditionalFeaturesDialog = false
                 shouldShowCameraView = true
             },
-            onAddLocationClick = {}
+            onAddLocationClick = {
+                shouldShowAdditionalFeaturesDialog = false
+                shouldShowLocationView = true
+            }
         )
     }
 
@@ -131,12 +137,26 @@ fun NoteCreationScreen(
         label = "cameraView"
     ) {
         CameraScreen(
-            cameraPermissionState = cameraPermissionState,
+            permissionState = cameraPermissionState,
             onCameraPermissionCheck = noteViewModel::checkCameraPermissions,
             onPhotosPick = noteViewModel::onPhotosPick,
             onBackPress = { shouldShowCameraView = false }
         )
     }
+
+    AnimatedVisibility(
+        modifier = Modifier.fillMaxSize(),
+        visible = shouldShowLocationView,
+        enter = expandHorizontally(),
+        exit = shrinkHorizontally(),
+        label = "locationView"
+    ) {
+        LocationView(
+            permissionState = locationPermissionState,
+            onLocationPermissionCheck = noteViewModel::checkLocationPermissions
+        )
+    }
+
 
     LaunchedEffect(key1 = noteViewModel.shouldNavigateToHome) {
         if (noteViewModel.shouldNavigateToHome) {

@@ -1,15 +1,8 @@
-package me.theek.memox.feature.camera
+package me.theek.memox.feature.location
 
 import android.Manifest
-import android.net.Uri
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -17,34 +10,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import me.theek.memox.core.design_system.components.PermissionSettingUi
 import me.theek.memox.core.util.PermissionState
-import me.theek.memox.feature.camera.components.CameraView
+import me.theek.memox.feature.location.components.GoogleMapView
 
 @Composable
-fun CameraScreen(
+fun LocationView(
     permissionState: PermissionState,
-    onCameraPermissionCheck: () -> Unit,
-    onPhotosPick: (List<Uri>) -> Unit,
-    onBackPress: () -> Unit
+    onLocationPermissionCheck: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
-    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                onCameraPermissionCheck()
+                onLocationPermissionCheck()
             }
         }
+
         lifecycleOwner.lifecycle.addObserver(observer)
 
         onDispose {
@@ -53,43 +43,34 @@ fun CameraScreen(
     }
 
     when (permissionState) {
-        PermissionState.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(strokeCap = StrokeCap.Round)
-            }
-        }
+        PermissionState.Loading -> {}
         PermissionState.PermissionGranted -> {
-            CameraView(
-                modifier = Modifier.fillMaxSize(),
-                context = context,
-                onPhotoPicks = onPhotosPick,
-                onNavigateToBack = onBackPress
-            )
+            GoogleMapView(modifier = modifier)
         }
         PermissionState.PermissionDenied -> {
             var shouldShowPermissionSettingsUi by rememberSaveable { mutableStateOf(false) }
             val permissionLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestPermission(),
-                onResult = { shouldShowPermissionSettingsUi = it.not() }
+                contract = ActivityResultContracts.RequestMultiplePermissions(),
+                onResult = {
+                    shouldShowPermissionSettingsUi = !it.containsValue(true)
+                }
             )
 
             LaunchedEffect(key1 = Unit) {
-                permissionLauncher.launch(Manifest.permission.CAMERA)
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                    )
+                )
             }
 
             if (shouldShowPermissionSettingsUi) {
                 PermissionSettingUi(
                     context = context,
-                    description = R.string.grant_camera_permission_in_order_to_add_photos_to_the_notes
+                    description = R.string.grant_location_permission_in_order_to_get_current_location_to_the_map
                 )
             }
         }
     }
-
-    BackHandler(onBack = onBackPress)
 }
