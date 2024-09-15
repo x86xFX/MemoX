@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.theek.memox.feature.camera.CameraScreen
-import me.theek.memox.feature.location.LocationView
+import me.theek.memox.feature.location.LocationScreen
 import me.theek.memox.feature.note.components.AdditionalFeaturesDialog
 import me.theek.memox.feature.note.components.FoldersRow
 import me.theek.memox.feature.note.components.NewFolderDialog
@@ -151,12 +151,13 @@ fun NoteCreationScreen(
         exit = shrinkHorizontally(),
         label = "locationView"
     ) {
-        LocationView(
+        LocationScreen(
             permissionState = locationPermissionState,
-            onLocationPermissionCheck = noteViewModel::checkLocationPermissions
+            onLocationPermissionCheck = noteViewModel::checkLocationPermissions,
+            currentLocation = noteViewModel.currentLocation,
+            onCurrentLocationClick = noteViewModel::onCheckCurrentLocation
         )
     }
-
 
     LaunchedEffect(key1 = noteViewModel.shouldNavigateToHome) {
         if (noteViewModel.shouldNavigateToHome) {

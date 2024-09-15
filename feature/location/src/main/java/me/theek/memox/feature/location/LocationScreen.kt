@@ -16,13 +16,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import me.theek.memox.core.design_system.components.PermissionSettingUi
+import me.theek.memox.core.model.LocationDetails
 import me.theek.memox.core.util.PermissionState
 import me.theek.memox.feature.location.components.GoogleMapView
 
 @Composable
-fun LocationView(
+fun LocationScreen(
+    currentLocation: LocationDetails?,
     permissionState: PermissionState,
     onLocationPermissionCheck: () -> Unit,
+    onCurrentLocationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -45,7 +48,11 @@ fun LocationView(
     when (permissionState) {
         PermissionState.Loading -> {}
         PermissionState.PermissionGranted -> {
-            GoogleMapView(modifier = modifier)
+            GoogleMapView(
+                modifier = modifier,
+                currentLocation = currentLocation,
+                onCurrentLocationClick = onCurrentLocationClick
+            )
         }
         PermissionState.PermissionDenied -> {
             var shouldShowPermissionSettingsUi by rememberSaveable { mutableStateOf(false) }

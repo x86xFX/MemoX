@@ -18,10 +18,10 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,14 +35,17 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
-import kotlinx.coroutines.launch
+import me.theek.memox.core.model.LocationDetails
 
 @Composable
-internal fun GoogleMapView(modifier: Modifier = Modifier) {
+internal fun GoogleMapView(
+    currentLocation: LocationDetails?,
+    onCurrentLocationClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     var isMapLoaded by remember { mutableStateOf(false) }
     val cameraPosition = rememberCameraPositionState()
-    val scope = rememberCoroutineScope()
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -91,21 +94,19 @@ internal fun GoogleMapView(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                FilledTonalButton(
-                    onClick = {
-                        scope.launch {
-                            cameraPosition.animate(
-                                update = CameraUpdateFactory.newLatLng(
-                                    LatLng(6.788011309424516, 79.94967268748948)
-                                ),
-                                durationMs = 1000
-                            )
-                        }
-                    }
-                ) {
+                FilledTonalButton(onClick = onCurrentLocationClick) {
                     Text(text = "Current Location")
                 }
             }
+        }
+    }
+
+    LaunchedEffect(key1 = currentLocation) {
+        currentLocation?.let {
+            cameraPosition.animate(
+                update = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 16f),
+                durationMs = 1000
+            )
         }
     }
 }

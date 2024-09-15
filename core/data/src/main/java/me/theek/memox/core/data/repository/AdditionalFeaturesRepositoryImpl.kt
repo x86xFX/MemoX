@@ -7,10 +7,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import me.theek.memox.core.data.service.LocationService
 import me.theek.memox.core.domain.repository.AdditionalFeaturesRepository
+import me.theek.memox.core.model.LocationDetails
 import javax.inject.Inject
 
-class AdditionalFeaturesRepositoryImpl @Inject constructor(@ApplicationContext private val context: Context) : AdditionalFeaturesRepository {
+class AdditionalFeaturesRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val locationService: LocationService
+) : AdditionalFeaturesRepository {
 
     override fun checkCameraPermission(): Flow<Boolean> = flow {
         delay(2000)
@@ -31,5 +36,9 @@ class AdditionalFeaturesRepositoryImpl @Inject constructor(@ApplicationContext p
         } else {
             emit(false)
         }
+    }
+
+    override suspend fun requestLocationUpdates(): LocationDetails? {
+        return locationService.requestLocationUpdate()
     }
 }

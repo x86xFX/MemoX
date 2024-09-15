@@ -23,6 +23,7 @@ import me.theek.memox.core.domain.use_case.ValidateFolderName
 import me.theek.memox.core.domain.use_case.ValidateNoteTitle
 import me.theek.memox.core.domain.use_case.ValidationResult
 import me.theek.memox.core.model.Folder
+import me.theek.memox.core.model.LocationDetails
 import me.theek.memox.core.model.Note
 import me.theek.memox.core.model.Photo
 import me.theek.memox.core.util.PermissionState
@@ -77,6 +78,8 @@ class NoteViewModel @Inject constructor(
     var noteTitleValidationState: ValidationResult by mutableStateOf(ValidationResult(isValid = true))
         private set
     var shouldNavigateToHome by mutableStateOf(false)
+        private set
+    var currentLocation by mutableStateOf<LocationDetails?>(null)
         private set
 
     fun checkCameraPermissions() {
@@ -165,6 +168,12 @@ class NoteViewModel @Inject constructor(
                 println(validationResult)
                 folderValidationState = validationResult
             }
+        }
+    }
+
+    fun onCheckCurrentLocation() {
+        viewModelScope.launch {
+            currentLocation = additionalFeaturesRepository.requestLocationUpdates()
         }
     }
 }
