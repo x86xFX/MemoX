@@ -16,7 +16,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import me.theek.memox.core.design_system.components.PermissionSettingUi
-import me.theek.memox.core.model.LocationDetails
 import me.theek.memox.core.util.LocationState
 import me.theek.memox.core.util.PermissionState
 import me.theek.memox.feature.location.components.GoogleMapView
@@ -24,7 +23,6 @@ import me.theek.memox.feature.location.components.GoogleMapView
 @Composable
 fun LocationScreen(
     locationStream: LocationState,
-    currentLocation: LocationDetails?,
     permissionState: PermissionState,
     onLocationPermissionCheck: () -> Unit,
     onCurrentLocationClick: () -> Unit,
