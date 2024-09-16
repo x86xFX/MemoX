@@ -35,11 +35,11 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
-import me.theek.memox.core.model.LocationDetails
+import me.theek.memox.core.util.LocationState
 
 @Composable
 internal fun GoogleMapView(
-    currentLocation: LocationDetails?,
+    locationStream: LocationState,
     onCurrentLocationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -101,12 +101,28 @@ internal fun GoogleMapView(
         }
     }
 
-    LaunchedEffect(key1 = currentLocation) {
-        currentLocation?.let {
-            cameraPosition.animate(
-                update = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 16f),
-                durationMs = 1000
-            )
+    when (locationStream){
+        is LocationState.Failure -> {
+            println("Failure: ${locationStream.message}")
+        }
+        LocationState.Idle -> {
+            println("Location Idle...")
+        }
+        LocationState.Loading -> {
+            println("Location Loading...")
+        }
+        is LocationState.Success -> {
+            println("Location Success")
+            LaunchedEffect(key1 = locationStream) {
+                locationStream.data?.let {
+                    cameraPosition.animate(
+                        update = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 16f),
+                        durationMs = 1000
+                    )
+                }
+            }
         }
     }
+
+
 }

@@ -44,6 +44,8 @@ class NoteViewModel @Inject constructor(
     private val _locationPermission: MutableStateFlow<PermissionState> = MutableStateFlow(PermissionState.Loading)
     val locationPermission: StateFlow<PermissionState> = _locationPermission.asStateFlow()
 
+    val locationStream = additionalFeaturesRepository.locationStream
+
     val folders: StateFlow<UiState<List<Folder>>> = folderRepository.getAllFolders()
         .map {
             delay(3000)
@@ -168,12 +170,6 @@ class NoteViewModel @Inject constructor(
                 println(validationResult)
                 folderValidationState = validationResult
             }
-        }
-    }
-
-    fun onCheckCurrentLocation() {
-        viewModelScope.launch {
-            currentLocation = additionalFeaturesRepository.requestLocationUpdates()
         }
     }
 }

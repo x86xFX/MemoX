@@ -1,93 +1,83 @@
 package me.theek.memox.core.data.service
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
-import android.location.LocationManager
-import android.os.Build
-import android.os.CancellationSignal
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import android.content.IntentSender
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import me.theek.memox.core.model.LocationDetails
+import me.theek.memox.core.util.LocationState
 
 class LocationService(
-    private val locationManager: LocationManager,
+    private val fusedLocationProviderClient: FusedLocationProviderClient,
     private val context: Context
 ) {
+    private val _locationState: MutableStateFlow<LocationState> = MutableStateFlow(LocationState.Idle)
+    val locationState = _locationState.asStateFlow()
 
-    private var locationDetails: LocationDetails? = null
+    private val cancellation = CancellationTokenSource()
 
-    suspend fun requestLocationUpdate(): LocationDetails? {
-        getCurrentLocation()
-        return locationDetails
-    }
+    fun createLocationRequest(activity: Activity) {
+        val locationRequest = LocationRequest
+            .Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 1000)
+            .build()
 
-    @SuppressLint("MissingPermission")
-    private suspend fun getCurrentLocation() {
-        withContext(Dispatchers.IO) {
-            delay(5000)
-            if (isGpsProviderEnabled || isNetworkProviderEnabled) {
-                if (isGpsProviderEnabled) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        getCurrentLocationForHigherAPIDevices(LocationManager.GPS_PROVIDER)
-                    } else {
-                        getCurrentLocationForLowerAPIDevices(LocationManager.GPS_PROVIDER)
-                    }
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        getCurrentLocationForHigherAPIDevices(LocationManager.NETWORK_PROVIDER)
-                    } else {
-                        getCurrentLocationForLowerAPIDevices(LocationManager.NETWORK_PROVIDER)
+        val locationSettings = LocationSettingsRequest
+            .Builder()
+            .addLocationRequest(locationRequest)
+            .build()
+
+        val settingsClient = LocationServices.getSettingsClient(context)
+        val settingsTask = settingsClient.checkLocationSettings(locationSettings)
+
+        settingsTask
+            .addOnSuccessListener {
+                getLocation()
+            }
+            .addOnFailureListener {
+                if (it is ResolvableApiException) {
+                    try {
+                        it.startResolutionForResult(activity, 1)
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        _locationState.value = LocationState.Failure(sendEx.localizedMessage)
+                    } catch (e: Exception) {
+                        _locationState.value = LocationState.Failure(e.localizedMessage)
                     }
                 }
-            } else {
-                locationDetails = null
             }
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    @SuppressLint("MissingPermission")
-    private fun getCurrentLocationForHigherAPIDevices(provider: String) {
-        locationManager.getCurrentLocation(
-            provider,
-            CancellationSignal(),
-            ContextCompat.getMainExecutor(context)
-        ) { location ->
-            locationDetails = LocationDetails(
-                latitude = location.latitude,
-                longitude = location.longitude,
-                accuracy = location.accuracy,
-                provider = location.provider,
-                altitude = location.altitude
-            )
-        }
     }
 
     @SuppressLint("MissingPermission")
-    private fun getCurrentLocationForLowerAPIDevices(provider: String) {
-        LocationManagerCompat.getCurrentLocation(
-            locationManager,
-            provider,
-            CancellationSignal(),
-            ContextCompat.getMainExecutor(context)
-        ) { location ->
-            locationDetails = LocationDetails(
-                latitude = location.latitude,
-                longitude = location.longitude,
-                accuracy = location.accuracy,
-                provider = location.provider,
-                altitude = location.altitude
-            )
-        }
+    private fun getLocation() {
+
+        val locationTask = fusedLocationProviderClient.getCurrentLocation(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            cancellation.token
+        )
+
+        locationTask
+            .addOnSuccessListener { location ->
+                println(location)
+                _locationState.value = LocationState.Success(
+                    LocationDetails(
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        provider = location.provider,
+                        accuracy = location.accuracy,
+                        altitude = location.altitude
+                    )
+                )
+            }
+            .addOnFailureListener { error ->
+                _locationState.value = LocationState.Failure(error.localizedMessage)
+            }
     }
-
-    private val isGpsProviderEnabled: Boolean
-        get() = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-
-    private val isNetworkProviderEnabled: Boolean
-        get() = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 }

@@ -17,7 +17,10 @@ import me.theek.memox.feature.note.NoteCreationScreen
 import me.theek.memox.feature.onboarding.OnboardingScreen
 
 @Composable
-fun AppNavigator(uiState: UiState.Success<UserPreference>) {
+fun AppNavigator(
+    onCurrentLocationClick: () -> Unit,
+    uiState: UiState.Success<UserPreference>
+) {
 
     val navController = rememberNavController()
 
@@ -71,7 +74,8 @@ fun AppNavigator(uiState: UiState.Success<UserPreference>) {
                             }
                         }
                     }
-                }
+                },
+                onCurrentLocationClick = onCurrentLocationClick
             )
         }
 

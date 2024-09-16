@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 
+    implementation(project(":core:data"))
     implementation(project(":core:design_system"))
     implementation(project(":core:datastore"))
     implementation(project(":core:model"))

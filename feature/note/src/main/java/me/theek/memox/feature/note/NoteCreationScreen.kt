@@ -40,11 +40,13 @@ import me.theek.memox.feature.note.components.NoteTopAppBar
 @Composable
 fun NoteCreationScreen(
     onNavigateBack: () -> Unit,
+    onCurrentLocationClick: () -> Unit,
     noteViewModel: NoteViewModel = hiltViewModel()
 ) {
     val foldersState by noteViewModel.folders.collectAsStateWithLifecycle()
     val cameraPermissionState by noteViewModel.cameraPermission.collectAsStateWithLifecycle()
     val locationPermissionState by noteViewModel.locationPermission.collectAsStateWithLifecycle()
+    val locationStream by noteViewModel.locationStream.collectAsStateWithLifecycle()
     var shouldShowAdditionalFeaturesDialog by remember { mutableStateOf(false) }
     var shouldShowCameraView by rememberSaveable { mutableStateOf(false) }
     var shouldShowLocationView by rememberSaveable { mutableStateOf(false) }
@@ -152,10 +154,11 @@ fun NoteCreationScreen(
         label = "locationView"
     ) {
         LocationScreen(
+            locationStream = locationStream,
             permissionState = locationPermissionState,
             onLocationPermissionCheck = noteViewModel::checkLocationPermissions,
             currentLocation = noteViewModel.currentLocation,
-            onCurrentLocationClick = noteViewModel::onCheckCurrentLocation
+            onCurrentLocationClick = onCurrentLocationClick
         )
     }
 

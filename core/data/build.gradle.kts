@@ -45,6 +45,8 @@ dependencies {
     implementation(project(":core:datastore"))
     implementation(project(":core:database"))
 
+    implementation(libs.play.services.location)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,7 +1,8 @@
 package me.theek.memox.core.data.di
 
 import android.content.Context
-import android.location.LocationManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,8 +17,20 @@ object LocationModule {
 
     @Provides
     @Singleton
-    fun provideLocationService(@ApplicationContext context: Context): LocationService {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return LocationService(locationManager, context)
+    fun provideFusedLocationClient(@ApplicationContext context: Context): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationService(
+        @ApplicationContext context: Context,
+        fusedLocationProviderClient: FusedLocationProviderClient
+    ): LocationService {
+
+        return LocationService(
+            context = context,
+            fusedLocationProviderClient = fusedLocationProviderClient
+        )
     }
 }

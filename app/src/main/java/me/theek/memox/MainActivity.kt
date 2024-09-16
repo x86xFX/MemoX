@@ -18,16 +18,21 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import me.theek.memox.core.data.service.LocationService
 import me.theek.memox.core.design_system.ui.theme.MemoXTheme
 import me.theek.memox.core.design_system.ui.theme.isInDarkMode
 import me.theek.memox.core.model.UserPreference
 import me.theek.memox.core.util.UiState
 import me.theek.memox.navigation.AppNavigator
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
+
+    @Inject
+    lateinit var locationService: LocationService
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -60,7 +65,10 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        AppNavigator(uiState = uiState)
+                        AppNavigator(
+                            uiState = uiState,
+                            onCurrentLocationClick = { locationService.createLocationRequest(this@MainActivity) }
+                        )
                     }
                 }
             }
