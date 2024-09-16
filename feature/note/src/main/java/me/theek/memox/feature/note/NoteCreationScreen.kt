@@ -157,7 +157,6 @@ fun NoteCreationScreen(
             locationStream = locationStream,
             permissionState = locationPermissionState,
             onLocationPermissionCheck = noteViewModel::checkLocationPermissions,
-            currentLocation = noteViewModel.currentLocation,
             onCurrentLocationClick = onCurrentLocationClick
         )
     }
