@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9baede5ffa0d219644e71f229a75c413",
+    "identityHash": "ec25429315c9304692ef23a312792c5f",
     "entities": [
       {
         "tableName": "folders",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`note_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `folder_id` INTEGER NOT NULL, `note_modified_date` INTEGER NOT NULL, `note_created_date` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`note_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `folder_id` INTEGER NOT NULL, `note_location_latitude` REAL NOT NULL, `note_location_longitude` REAL NOT NULL, `note_modified_date` INTEGER NOT NULL, `note_created_date` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -68,6 +68,18 @@
             "fieldPath": "folderId",
             "columnName": "folder_id",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "note_location_latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "note_location_longitude",
+            "affinity": "REAL",
             "notNull": true
           },
           {
@@ -134,7 +146,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9baede5ffa0d219644e71f229a75c413')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ec25429315c9304692ef23a312792c5f')"
     ]
   }
 }

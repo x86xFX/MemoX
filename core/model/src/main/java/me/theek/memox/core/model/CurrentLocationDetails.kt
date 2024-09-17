@@ -1,6 +1,6 @@
 package me.theek.memox.core.model
 
-data class LocationDetails(
+data class CurrentLocationDetails(
     val latitude: Double,
     val longitude: Double,
     val provider: String?,

@@ -98,9 +98,11 @@ fun NoteCreationScreen(
                         title = noteViewModel.noteTitle,
                         description = noteViewModel.noteDescription,
                         titleValidationResult = noteViewModel.noteTitleValidationState,
+                        selectedPics = noteViewModel.selectedPics,
+                        isLocationAdded = noteViewModel.noteMapLocation != null,
                         onTitleChange = noteViewModel::onNoteTitleChange,
                         onDescriptionChange = noteViewModel::onNoteDescriptionChange,
-                        selectedPics = noteViewModel.selectedPics
+                        onAddedLocationRemove = noteViewModel::onRemoveAddedLocation
                     )
                 }
             }
@@ -157,7 +159,9 @@ fun NoteCreationScreen(
             locationStream = locationStream,
             permissionState = locationPermissionState,
             onLocationPermissionCheck = noteViewModel::checkLocationPermissions,
-            onCurrentLocationClick = onCurrentLocationClick
+            onCurrentLocationClick = onCurrentLocationClick,
+            onSaveCurrentLocation = noteViewModel::onAddLocation,
+            onBackPress = { shouldShowLocationView = false }
         )
     }
 

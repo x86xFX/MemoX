@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -47,7 +46,6 @@ class NoteViewModel @Inject constructor(
 
     val folders: StateFlow<UiState<List<Folder>>> = folderRepository.getAllFolders()
         .map {
-            delay(3000)
             if (it.isEmpty()) {
                 UiState.Empty
             } else {
@@ -79,6 +77,8 @@ class NoteViewModel @Inject constructor(
     var noteTitleValidationState: ValidationResult by mutableStateOf(ValidationResult(isValid = true))
         private set
     var shouldNavigateToHome by mutableStateOf(false)
+        private set
+    var noteMapLocation by mutableStateOf<Pair<Double, Double>?>(null)
         private set
 
     fun checkCameraPermissions() {
@@ -119,6 +119,12 @@ class NoteViewModel @Inject constructor(
     fun onPhotosPick(pics: List<Uri>) {
         selectedPics = pics
     }
+    fun onAddLocation(latitude: Double, longitude: Double) {
+        noteMapLocation = Pair(latitude, longitude)
+    }
+    fun onRemoveAddedLocation() {
+        noteMapLocation = null
+    }
 
     fun onNewNoteCreate() {
         viewModelScope.launch {
@@ -131,6 +137,8 @@ class NoteViewModel @Inject constructor(
                             title = noteTitle,
                             description = noteDescription,
                             folderId = selectedFolderId!!,
+                            latitude = noteMapLocation?.first ?: 0.0,
+                            longitude = noteMapLocation?.second ?: 0.0,
                             modifiedDate = System.currentTimeMillis(),
                             createdDate = System.currentTimeMillis()
                         ),

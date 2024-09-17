@@ -10,6 +10,8 @@ data class NoteEntity(
     val title: String,
     val description: String,
     @ColumnInfo(name = "folder_id") val folderId: Long,
+    @ColumnInfo(name = "note_location_latitude") val latitude: Double,
+    @ColumnInfo(name = "note_location_longitude") val longitude: Double,
     @ColumnInfo(name = "note_modified_date") val modifiedDate: Long,
     @ColumnInfo(name = "note_created_date") val createdDate: Long
 )

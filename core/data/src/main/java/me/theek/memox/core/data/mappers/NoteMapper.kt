@@ -8,6 +8,8 @@ fun Note.toNoteEntity(): NoteEntity {
         title = title,
         description = description,
         folderId = folderId,
+        latitude = latitude,
+        longitude = longitude,
         modifiedDate = modifiedDate,
         createdDate = createdDate
     )
@@ -19,6 +21,8 @@ fun NoteEntity.toNote(): Note {
         title = title,
         description = description,
         folderId = folderId,
+        latitude = latitude,
+        longitude = longitude,
         modifiedDate = modifiedDate,
         createdDate = createdDate
     )

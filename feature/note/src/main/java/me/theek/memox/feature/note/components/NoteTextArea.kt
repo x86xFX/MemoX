@@ -32,17 +32,20 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import me.theek.memox.core.domain.use_case.ValidationResult
+import me.theek.memox.feature.location.components.LocationChip
 import me.theek.memox.feature.note.R
 
 @Composable
 internal fun NoteTextArea(
     maxHeight: Dp,
     title: String,
-    onTitleChange: (String) -> Unit,
     titleValidationResult: ValidationResult,
     description: String,
-    onDescriptionChange: (String) -> Unit,
     selectedPics: List<Uri>?,
+    isLocationAdded: Boolean,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onAddedLocationRemove: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
@@ -95,6 +98,13 @@ internal fun NoteTextArea(
                 Text(text = stringResource(R.string.type_something_in_your_mind))
             }
         )
+
+        if (isLocationAdded) {
+            LocationChip(
+                modifier = Modifier.padding(top = 10.dp),
+                onRemoveLocation = onAddedLocationRemove
+            )
+        }
 
         selectedPics?.let {
             LazyRow(

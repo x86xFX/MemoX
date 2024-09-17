@@ -13,7 +13,7 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.theek.memox.core.model.LocationDetails
+import me.theek.memox.core.model.CurrentLocationDetails
 import me.theek.memox.core.util.LocationState
 
 class LocationService(
@@ -67,7 +67,7 @@ class LocationService(
             .addOnSuccessListener { location ->
                 println(location)
                 _locationState.value = LocationState.Success(
-                    LocationDetails(
+                    CurrentLocationDetails(
                         latitude = location.latitude,
                         longitude = location.longitude,
                         provider = location.provider,

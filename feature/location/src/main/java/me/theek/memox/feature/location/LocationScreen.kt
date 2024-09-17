@@ -1,6 +1,7 @@
 package me.theek.memox.feature.location
 
 import android.Manifest
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -10,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -26,7 +26,8 @@ fun LocationScreen(
     permissionState: PermissionState,
     onLocationPermissionCheck: () -> Unit,
     onCurrentLocationClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onSaveCurrentLocation: (latitude: Double, longitude: Double) -> Unit,
+    onBackPress: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -49,9 +50,10 @@ fun LocationScreen(
         PermissionState.Loading -> {}
         PermissionState.PermissionGranted -> {
             GoogleMapView(
-                modifier = modifier,
                 locationStream = locationStream,
-                onCurrentLocationClick = onCurrentLocationClick
+                onCurrentLocationClick = onCurrentLocationClick,
+                onSaveCurrentLocation = onSaveCurrentLocation,
+                onNavigateToBack = onBackPress
             )
         }
         PermissionState.PermissionDenied -> {
@@ -80,4 +82,6 @@ fun LocationScreen(
             }
         }
     }
+
+    BackHandler(onBack = onBackPress)
 }
