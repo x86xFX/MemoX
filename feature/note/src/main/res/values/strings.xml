@@ -17,4 +17,5 @@
     <string name="create_a_folder">Create a folder</string>
     <string name="click_to_create_a_new_folder">Click + to create a new folder</string>
     <string name="selected_image">Selected image</string>
+    <string name="remove_image">Remove image</string>
 </resources>

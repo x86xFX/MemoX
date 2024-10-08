@@ -65,7 +65,6 @@ class LocationService(
 
         locationTask
             .addOnSuccessListener { location ->
-                println(location)
                 _locationState.value = LocationState.Success(
                     CurrentLocationDetails(
                         latitude = location.latitude,

@@ -1,5 +1,8 @@
 package me.theek.memox.core.data.repository
 
+import android.content.Context
+import android.content.Intent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -23,12 +26,13 @@ import javax.inject.Singleton
 @Singleton
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao,
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    @ApplicationContext private val context: Context
 ) : NoteRepository {
 
     override fun getAllNotes(): Flow<List<NoteWithPhotosAndFolder>> {
         return noteDao.getAllNotes()
-            .onStart { delay(5000) }
+            .onStart { delay(3000) }
             .map {
                 it.map { noteWithPhotosAndFolderDB ->
                     noteWithPhotosAndFolderDB.toNoteWithPhotosAndFolder()
@@ -47,8 +51,15 @@ class NoteRepositoryImpl @Inject constructor(
 
             launch {
                 val noteId = noteDao.createNote(noteEntity = note.toNoteEntity())
+                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
                 if (pics != null) {
-                    noteDao.addPhotos(pics.map { it.toPhotoEntity(noteId) })
+                    noteDao.addPhotos(
+                        pics.map { pic ->
+                            context.contentResolver.takePersistableUriPermission(pic.path, flag)
+                            pic.toPhotoEntity(noteId)
+                        }
+                    )
                 }
             }
         }
@@ -60,21 +71,9 @@ class NoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteNote(note: Note) {
+    override suspend fun deleteNote(noteId: Long) {
         withContext(Dispatchers.IO) {
-            noteDao.deleteNote(noteEntity = note.toNoteEntity())
-        }
-    }
-
-    override suspend fun deleteNotes(vararg notes: Note) {
-        withContext(Dispatchers.IO) {
-            noteDao.deleteNotes(
-                noteEntity = notes
-                    .map { note ->
-                        note.toNoteEntity()
-                    }
-                    .toTypedArray()
-            )
+            noteDao.deleteNote(noteId = noteId)
         }
     }
 }

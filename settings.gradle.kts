@@ -20,6 +20,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MemoX"
+
 include(":app")
 include(":feature:onboarding")
 include(":core:design_system")

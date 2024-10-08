@@ -26,7 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,13 +40,14 @@ import me.theek.memox.core.model.Folder
 import me.theek.memox.core.model.NoteWithPhotosAndFolder
 import me.theek.memox.core.util.UiState
 import me.theek.memox.feature.home.R
+import me.theek.memox.feature.home.util.getGreeting
 
 @Composable
 internal fun NotesListView(
-    notesState: UiState<List<NoteWithPhotosAndFolder>>,
-    foldersState: UiState<List<Folder>>,
-    onNewNoteCreateClick: () -> Unit,
+    notesState: UiState<Pair<List<NoteWithPhotosAndFolder>, List<Folder>>>,
+    onNewNoteCreateClick: (Long?) -> Unit,
     onNoteClick: (Long) -> Unit,
+    onNoteDelete: (Long) -> Unit,
     onFolderClick: (Long) -> Unit,
     onNavigateToEmptyScreen: () -> Unit,
     modifier: Modifier = Modifier
@@ -64,16 +68,26 @@ internal fun NotesListView(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Good afternoon",
+                text = LocalContext.current.getGreeting(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                fontSize = MaterialTheme.typography.displaySmall.fontSize,
                 fontFamily = K2DFontFamily,
                 fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                style = TextStyle(
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.tertiary,
+                            MaterialTheme.colorScheme.tertiary,
+                        )
+                    )
+                )
             )
             Button(
-                onClick = onNewNoteCreateClick,
+                onClick = { onNewNoteCreateClick(null) },
                 shape = CircleShape
             ) {
                 Icon(
@@ -97,7 +111,7 @@ internal fun NotesListView(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            when (foldersState) {
+            when (notesState) {
                 UiState.Loading -> {
                     Spacer(
                         modifier = Modifier
@@ -114,7 +128,7 @@ internal fun NotesListView(
                         horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.Start)
                     ) {
                         items(
-                            items = foldersState.data,
+                            items = notesState.data.second,
                             key = { it.id }
                         ) { folder ->
                             FolderCard(
@@ -128,7 +142,7 @@ internal fun NotesListView(
         }
 
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 5.dp, alignment = Alignment.Top)
         ) {
@@ -152,7 +166,10 @@ internal fun NotesListView(
                     )
                 }
                 is UiState.Success -> {
-                    if (notesState.data.isEmpty()) {
+
+                    val notes = notesState.data.first
+
+                    if (notes.isEmpty()) {
                         onNavigateToEmptyScreen()
                     } else {
                         LazyColumn(
@@ -161,14 +178,16 @@ internal fun NotesListView(
                             verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             items(
-                                items = notesState.data,
+                                items = notes,
                                 key = { it.note.id }
                             ) {
                                 NoteRow(
+                                    modifier = Modifier.animateItem(),
                                     note = it.note,
                                     folderName = it.folder.name,
                                     photo = it.photo,
-                                    onNoteClick = onNoteClick
+                                    onNoteClick = onNoteClick,
+                                    onNoteDelete = onNoteDelete
                                 )
                             }
                         }

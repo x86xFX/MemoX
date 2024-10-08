@@ -21,16 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import me.theek.memox.core.domain.use_case.ValidationResult
 import me.theek.memox.feature.location.components.LocationChip
 import me.theek.memox.feature.note.R
@@ -46,6 +42,7 @@ internal fun NoteTextArea(
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onAddedLocationRemove: () -> Unit,
+    onAddedPicsRemove: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
@@ -119,22 +116,16 @@ internal fun NoteTextArea(
                     )
                     .padding(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(space = 5.dp)
+                horizontalArrangement = Arrangement.Start
             ) {
                 itemsIndexed(
                     items = it,
                     key = { index, _ -> index }
-                ) { _, uri ->
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(uri)
-                            .memoryCacheKey(uri.path)
-                            .diskCacheKey(uri.path)
-                            .build(),
-                        contentDescription = stringResource(id = R.string.selected_image),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
+                ) { index, uri ->
+                    SelectedPicture(
+                        index = index,
+                        uri = uri,
+                        onRemove = onAddedPicsRemove
                     )
                 }
             }

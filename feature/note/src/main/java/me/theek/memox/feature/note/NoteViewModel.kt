@@ -125,6 +125,11 @@ class NoteViewModel @Inject constructor(
     fun onRemoveAddedLocation() {
         noteMapLocation = null
     }
+    fun onRemoveAddedPics(removeIndex: Int) {
+        val removedList = selectedPics?.toMutableList()
+        removedList?.removeAt(removeIndex)
+        selectedPics = removedList
+    }
 
     fun onNewNoteCreate() {
         viewModelScope.launch {
@@ -172,7 +177,6 @@ class NoteViewModel @Inject constructor(
                 newFolderName = ""
 
             } else {
-                println(validationResult)
                 folderValidationState = validationResult
             }
         }

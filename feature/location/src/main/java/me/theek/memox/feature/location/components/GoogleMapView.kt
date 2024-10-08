@@ -6,9 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -33,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -82,16 +86,23 @@ internal fun GoogleMapView(
             }
         }
 
+        val padding = with(LocalDensity.current) {
+            WindowInsets.navigationBars.getBottom(this).toDp()
+        }
+
+
         GoogleMap(
             modifier = Modifier.matchParentSize(),
             cameraPositionState = cameraPosition,
             onMapLoaded = { isMapLoaded = true },
+            contentPadding = PaddingValues(bottom = padding),
             properties = MapProperties(
+                isBuildingEnabled = true,
                 isMyLocationEnabled = false,
                 mapType = MapType.HYBRID
             ),
             uiSettings = MapUiSettings(
-                compassEnabled = false,
+                compassEnabled = true,
                 zoomControlsEnabled = false
             )
         ) {
@@ -111,7 +122,7 @@ internal fun GoogleMapView(
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .statusBarsPadding()
-                    .padding(20.dp)
+                    .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 45.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.background.copy(alpha = 0.3f))
                     .padding(15.dp),
@@ -153,14 +164,8 @@ internal fun GoogleMapView(
     }
 
     when (locationStream){
-        is LocationState.Failure -> {
-            println("Failure: ${locationStream.message}")
-        }
-        LocationState.Idle -> {
-            println("Location Idle...")
-        }
+        is LocationState.Failure, LocationState.Idle -> Unit
         is LocationState.Success -> {
-            println("Location Success")
             LaunchedEffect(key1 = locationStream) {
                 locationStream.data?.let {
                     cameraPosition.animate(

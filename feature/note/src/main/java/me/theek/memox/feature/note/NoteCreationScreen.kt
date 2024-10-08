@@ -102,7 +102,8 @@ fun NoteCreationScreen(
                         isLocationAdded = noteViewModel.noteMapLocation != null,
                         onTitleChange = noteViewModel::onNoteTitleChange,
                         onDescriptionChange = noteViewModel::onNoteDescriptionChange,
-                        onAddedLocationRemove = noteViewModel::onRemoveAddedLocation
+                        onAddedLocationRemove = noteViewModel::onRemoveAddedLocation,
+                        onAddedPicsRemove = noteViewModel::onRemoveAddedPics
                     )
                 }
             }

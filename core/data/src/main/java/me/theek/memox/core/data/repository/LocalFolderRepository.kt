@@ -21,7 +21,7 @@ class LocalFolderRepository @Inject constructor(private val folderDao: FolderDao
     override fun getAllFolders(): Flow<List<Folder>> {
         return folderDao
             .getAllFolders()
-            .onStart { delay(3000) }
+            .onStart { delay(4500) }
             .map { entities ->
                 entities.map { it.toFolder() }
             }
@@ -36,13 +36,18 @@ class LocalFolderRepository @Inject constructor(private val folderDao: FolderDao
 
     override suspend fun updateFolder(folder: Folder) {
         withContext(Dispatchers.IO) {
-            folderDao.updateFolder(folderEntity = folder.toFolderEntity())
+            folderDao.updateFolder(
+                id = folder.id,
+                folderName = folder.name,
+                modifiedDate = folder.modifiedDate,
+                createdDate = folder.createdDate
+            )
         }
     }
 
     override suspend fun deleteFolder(folder: Folder) {
         withContext(Dispatchers.IO) {
-            folderDao.deleteFolder(folderEntity = folder.toFolderEntity())
+            folderDao.deleteNotesAndFolder(folderId = folder.id)
         }
     }
 }

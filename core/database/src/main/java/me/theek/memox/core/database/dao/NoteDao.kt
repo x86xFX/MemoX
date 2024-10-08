@@ -1,7 +1,6 @@
 package me.theek.memox.core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -31,9 +30,6 @@ interface NoteDao {
     @Update
     suspend fun updateNote(noteEntity: NoteEntity)
 
-    @Delete
-    suspend fun deleteNote(noteEntity: NoteEntity)
-
-    @Delete
-    suspend fun deleteNotes(vararg noteEntity: NoteEntity)
+    @Query("DELETE FROM notes WHERE note_id = :noteId")
+    suspend fun deleteNote(noteId: Long)
 }

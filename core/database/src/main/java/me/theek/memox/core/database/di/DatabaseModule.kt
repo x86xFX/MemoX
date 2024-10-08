@@ -23,7 +23,8 @@ object DatabaseModule {
             context = context,
             klass = MemoXDatabase::class.java,
             name = "memox_db"
-        ).build()
+        )
+        .build()
     }
 
     @Provides

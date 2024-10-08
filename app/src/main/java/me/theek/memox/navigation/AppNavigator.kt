@@ -1,7 +1,6 @@
 package me.theek.memox.navigation
 
 import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.Lifecycle
@@ -56,14 +55,14 @@ fun AppNavigator(
                     if (navController.canGoBack) {
                         navController.navigate(AppRoutes.GET_STARTED_SCREEN)
                     }
-                }
+                },
             )
         }
 
         composable(
             route = AppRoutes.NOTE_SCREEN,
             enterTransition = { scaleIn() },
-            exitTransition = { scaleOut() }
+            exitTransition = { slideOutHorizontally() }
         ) {
             NoteCreationScreen(
                 onNavigateBack = {

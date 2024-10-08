@@ -5,4 +5,17 @@
     <string name="folders">FOLDERS</string>
     <string name="recent_notes">RECENT NOTES</string>
     <string name="image_preview">Image preview</string>
+    <string name="good_morning">Good morning</string>
+    <string name="good_afternoon">Good afternoon</string>
+    <string name="good_evening">Good evening</string>
+    <string name="folder_created_at">Folder created at</string>
+    <string name="folder_modified_at">Folder modified at</string>
+    <string name="rename_folder">Rename folder</string>
+    <string name="delete_folder">Delete folder?</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="delete_folder_warning">Delete folder warning</string>
+    <string name="folder_name">Folder name</string>
+    <string name="save">Save</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
 </resources>

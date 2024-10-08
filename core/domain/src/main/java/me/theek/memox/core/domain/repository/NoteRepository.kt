@@ -9,6 +9,5 @@ interface NoteRepository {
     fun getAllNotes(): Flow<List<NoteWithPhotosAndFolder>>
     suspend fun createNote(note: Note, pics: List<Photo>?)
     suspend fun updateNote(note: Note)
-    suspend fun deleteNote(note: Note)
-    suspend fun deleteNotes(vararg notes: Note)
+    suspend fun deleteNote(noteId: Long)
 }
